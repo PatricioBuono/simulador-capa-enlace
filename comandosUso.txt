@@ -1,0 +1,2 @@
+1) g++ main.cpp capa_enlace.cpp medio_fisico.cpp -o simulador.exe
+2) .\simulador.exe
