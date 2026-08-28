@@ -5,13 +5,26 @@
 using namespace std;
 
 bool receptor(Marco marco_entrante) {
+    // Variable estática para recordar qué paquete esperamos (0 o 1)
+    static int secuencia_esperada = 0; 
+    
     cout << "[RECEPTOR] Marco recibido. Revisando errores..." << endl;
     
     int calc = calcular_checksum(marco_entrante.info.datos);
     
     if (calc != marco_entrante.checksum) {
-        cout << "[RECEPTOR] Error: El marco esta danado. Descartando..." << endl;
+        cout << "[RECEPTOR] Error: 'El marco esta danado. Descartando...'" << endl;
         return false;
+    }
+    
+    if (marco_entrante.num_secuencia != secuencia_esperada) {
+        cout << "[RECEPTOR] Alerta: 'Marco duplicado detectado. Ya lo procese antes. Reenviando ACK...'" << endl;
+        
+        if (simular_perdida()) {
+            cout << "[MEDIO FISICO] Uy! El ACK del duplicado se perdio." << endl;
+            return false;
+        }
+        return true; 
     }
     
     if (simular_perdida()) {
@@ -20,6 +33,10 @@ bool receptor(Marco marco_entrante) {
     }
     
     cout << "[RECEPTOR] Marco perfecto. Datos entregados: " << marco_entrante.info.datos << endl;
+    
+    // Si llegó bien, ahora esperamos el otro número (de 0 a 1, o de 1 a 0)
+    secuencia_esperada = 1 - secuencia_esperada; 
+    
     return true;
 }
 
