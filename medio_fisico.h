@@ -2,5 +2,7 @@
 #define MEDIO_FISICO_H
 #include "estructuras.h"
 bool simular_perdida();
-int calcular_checksum(std::string datos);
+bool simular_corrupcion();
+void corromper_datos(std::string &datos);
+int calcular_checksum(const std::string &datos);
 #endif
